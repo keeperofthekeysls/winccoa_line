@@ -17,7 +17,7 @@ LAYER, 0
 13 2
 "PUSH_BUTTON1"
 ""
-1 60 133.448275862069 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 60 130 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 1 0 0 0 0 0
 E E E
@@ -29,7 +29,7 @@ LANG:10027 0
 "layoutAlignment" "AlignNone"
 1
 LANG:10027 43 Noto Sans,-1,16,5,400,0,0,0,0,0,0,0,0,0,0,1
-0  58 124 222 182
+0  58 120.551724137931 222 178.551724137931
 
 T 
 1
@@ -54,16 +54,19 @@ LANG:10027 12 PUSH_BUTTON1
   //Проверяем на равенство xml, если да то переходим к следующему узлу.
   rootNode = xmlFirstChild(id);
   nodeName=xmlNodeName(id, rootNode);
+  xmlChildNodes(id,rootNode,childNode);
+  DebugN(\"xml count node\",dynlen(childNode));
 
-  if (nodeName== \"xml\")
+  if (dynlen(xmlChildNodes(id,rootNode))<0)
   {
     rootNode=xmlNextSibling(id,rootNode);
     nodeName = xmlNodeName(id,rootNode);
+    //DebugN(\"Next NODE:\", nodeName);
   }
 
   //Считываем дочерние ноды.
   xmlChildNodes(id, rootNode, childNode);
-  DebugN(\"count nodes\",dynlen(childNode));
+  DebugN(\"count nodes\",xmlNodeName(id,rootNode),dynlen(childNode));
 
   for(int i=1; i <=dynlen(childNode); i++)
   {
@@ -77,12 +80,18 @@ LANG:10027 12 PUSH_BUTTON1
        DebugN(\"searchNode\", xmlNodeName(id,searchNode[j]),\"i\",i,\"j\",j);
      }
     }
-    //DebugN(\"node:\", xmlNodeName(id, cN), i);
+
   }
 
   //DebugN(nodeName);
-
   xmlCloseDocument(id);
+}
+
+int rekurs(int id, dyn_uint &Pnode)
+{
+  DebugN(\"name\", xmlNodeName(id,Pnode));
+  DebugN(\"rekurs\", Pnode);
+  return 0;
 }" 0
  E E E
 0

@@ -61,38 +61,39 @@ LANG:10027 12 PUSH_BUTTON1
   {
     rootNode=xmlNextSibling(id,rootNode);
     nodeName = xmlNodeName(id,rootNode);
-    //DebugN(\"Next NODE:\", nodeName);
   }
 
   //Считываем дочерние ноды.
   xmlChildNodes(id, rootNode, childNode);
-  DebugN(\"count nodes\",xmlNodeName(id,rootNode),dynlen(childNode));
 
   for(int i=1; i <=dynlen(childNode); i++)
   {
     cN = childNode[i];
+
     if (xmlNodeName(id,childNode[i]) == \"Substation\")
     {
      xmlChildNodes(id, childNode[i], searchNode);
-
+     if (dynlen(childNode[i])<0)
+     {
+       rootNode = childNode[i];
+       DebugN(\"rootNode\",xmlNodeName(id,rootNode));
+       DebugN(\"firstNode:\", xmlNodeName(id,xmlFirstChild(id, childNode[i])));
+       //while ()
+     }
+/*
      for (int j=1; j<=dynlen(searchNode);j++)
      {
        DebugN(\"searchNode\", xmlNodeName(id,searchNode[j]),\"i\",i,\"j\",j);
      }
+*/
     }
 
   }
-
+//DebugN(\"count nodes\",xmlNodeName(id,rootNode),dynlen(childNode));
   //DebugN(nodeName);
   xmlCloseDocument(id);
 }
-
-int rekurs(int id, dyn_uint &Pnode)
-{
-  DebugN(\"name\", xmlNodeName(id,Pnode));
-  DebugN(\"rekurs\", Pnode);
-  return 0;
-}" 0
+" 0
  E E E
 0
 LAYER, 1 

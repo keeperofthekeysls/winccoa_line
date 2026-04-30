@@ -58,23 +58,19 @@ LANG:10027 12 PUSH_BUTTON1
 
   //Читаем первый элемент файла
   rootNode = xmlFirstChild(id);
-  nodeName=xmlNodeName(id, rootNode);
-
+  nodeName = xmlNodeName(id, rootNode);
   //Если узел не имеет дочерних узлов переходим к следующему.
-  if (isChild(id, rootNode))
-  {
-    DebugN(\"Node is here\");
-  }
-  else
-  {
-    DebugN(\"Node\",nodeName, \"не имеет узлов. Переходим на следующую\");
-    rootNode=xmlNextSibling(id,rootNode);
-  }
 
-  while (isChild(id,rootNode))
+bool b = true;
+  while (b)
   {
-    rekurs(id, rootNode);
+    if (isChild(id, rootNode))
+    {
+
+    }
     rootNode=xmlNextSibling(id,rootNode);
+    DebugN(nodeName);
+    b = false;
   }
 
   xmlCloseDocument(id);
@@ -87,8 +83,9 @@ int rekurs (int idDoc, unsigned rootNode)
   unsigned parentNode;
   string nodeName;
   dyn_uint nodes;
-  int count=3;
-  if (isChild(idDoc, rootNode)) count = dynlen(nodes);
+  int count;
+
+  if (isChild(idDoc, rootNode)) count = (xmlChildNodes(idDoc,rootNode,nodes));;
   nodeName = xmlNodeName(idDoc, rootNode);
   DebugN(\"Рекурсия\", nodeName, count);
   for (int i = 1; i < count; i ++)
@@ -109,7 +106,22 @@ int rekurs (int idDoc, unsigned rootNode)
 //Проверка узлов на наличие дочерних узлов
 bool isChild(int idDoc, unsigned rootNode)
 {
-  if (xmlFirstChild(idDoc, rootNode) < 0) return false; else return true;
+  if (xmlFirstChild(idDoc, rootNode) < 0)
+  {
+    DebugN(\"isCHild = false\");
+    return false;
+  }
+  else
+  {
+    DebugN(\"isCHild = true\");
+    return true;
+  }
+}
+
+
+test(int idDoc, unsigned rootNode)
+{
+
 }" 0
  E E E
 0

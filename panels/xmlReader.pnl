@@ -47,82 +47,141 @@ LANG:10027 12 PUSH_BUTTON1
   string nodeName;
 
   //переменная для хранения узлов.
-  unsigned rootNode;
+  unsigned rootNode, parentNode;
   unsigned node;
   dyn_uint childNode,searchNode;
   uint cN;
-
+  bool b = true;
   //Открытие документа
-  id = xmlDocumentFromFile(fileName,errMsg,errLine, errColumn);
+  id = xmlDocumentFromFile(fileName, errMsg, errLine, errColumn);
+  int R=0;
   DebugN(\"File opened\");
 
   //Читаем первый элемент файла
   rootNode = xmlFirstChild(id);
   nodeName = xmlNodeName(id, rootNode);
-  //Если узел не имеет дочерних узлов переходим к следующему.
 
-bool b = true;
-  while (b)
-  {
-    if (isChild(id, rootNode))
-    {
 
-    }
-    rootNode=xmlNextSibling(id,rootNode);
-    DebugN(nodeName);
-    b = false;
-  }
+//while (xmlNextSibling(id, rootNode) > 0)
 
+    Debug(xmlNodeName(id,rootNode));
+    rootNode = xmlNextSibling(id, rootNode);
+    Debug(xmlNodeName(id,rootNode));
+    xmlNextSibling(id, rootNode);
+    Debug(xmlNodeName(id,rootNode));
+
+
+
+//   while (b)
+//   {
+//     Debug(\"while\");
+//     if (xmlFirstChild(id, rootNode) > 0)
+//     {
+//       xmlNodeName(id,rootNode);
+//       if (xmlChildNodes(id, rootNode, childNode) > 0)
+//       {
+//         nodeName = xmlNodeName(id, rootNode);
+//         DebugN(\"У ноды есть дочерние узлы\", nodeName);
+//         xmlNextSibling(id, rootNode);
+//       }
+//     }
+//     else
+//     {
+//       xmlNextSibling(id, rootNode);
+//       b = false;
+//     }
+//     xmlNextSibling(id, rootNode);
+//   }
   xmlCloseDocument(id);
   DebugN(\"Close Document\");
 }
 
+
+
+
+
+
+//       if (xmlNextSibling(id, rootNode) > 0)
+//       {
+//         if (xmlChildNodes(id, rootNode, childNode) < 0)
+//         {
+//           DebugN(\"Дочерних узлов не имеет\", xmlNodeName(id, rootNode));
+//         }
+//         else
+//           {
+//
+//             DebugN(\"Дочерние узлы имеются\", xmlNodeName(id, rootNode));
+//           }
+//       else
+//       {
+//           b = false;
+//       }
+//       }
+
+
+  //Если узел не имеет дочерних узлов переходим к следующему.
+//   bool b = true;
+//     while (b)
+//     {
+//       if (isChild(id, rootNode))
+//       {
+//         b = false;
+//       }
+//       else
+//       {
+//         rootNode=xmlNextSibling(id,rootNode);
+//         DebugN(xmlNodeName(id,rootNode));
+//       }
+//     }
+
+
+
 //Рекурсия по узлам.
-int rekurs (int idDoc, unsigned rootNode)
-{
-  unsigned parentNode;
-  string nodeName;
-  dyn_uint nodes;
-  int count;
-
-  if (isChild(idDoc, rootNode)) count = (xmlChildNodes(idDoc,rootNode,nodes));;
-  nodeName = xmlNodeName(idDoc, rootNode);
-  DebugN(\"Рекурсия\", nodeName, count);
-  for (int i = 1; i < count; i ++)
-  {
-    DebugN(\"isChild\");
-    if (isChild(id, nodes[i]))
-    {
-       rootNode = nodes[i];
+// int rekurs (int idDoc, unsigned rootNode)
+// {
+//   unsigned parentNode;
+//   string nodeName;
+//   dyn_uint nodes;
+//   int count;
+//
+//   if (isChild(idDoc, rootNode)) count = (xmlChildNodes(idDoc,rootNode,nodes));;
+//   nodeName = xmlNodeName(idDoc, rootNode);
+//   DebugN(\"Рекурсия\", nodeName, count);
+//   for (int i = 1; i < count; i ++)
+//   {
+//     DebugN(\"isChild\");
+//     if (isChild(id, nodes[i]))
+//     {
+//        rootNode = nodes[i];
        //rekurs(idDoc, rootNode);
-       return 0;
-    }
+//        return 0;
+//     }
+//
+//   }
 
-  }
-
-  return -1;
-}
-
+//   return -1;
+// }
+//
 //Проверка узлов на наличие дочерних узлов
 bool isChild(int idDoc, unsigned rootNode)
 {
   if (xmlFirstChild(idDoc, rootNode) < 0)
   {
-    DebugN(\"isCHild = false\");
+    DebugN(xmlNodeName(idDoc,rootNode),\"isCHild = false\");
     return false;
   }
   else
   {
-    DebugN(\"isCHild = true\");
+    DebugN(xmlNodeName(idDoc,rootNode),\"isCHild = true\");
     return true;
   }
 }
-
-
-test(int idDoc, unsigned rootNode)
-{
-
-}" 0
+//
+//
+// test(int idDoc, unsigned rootNode)
+// {
+//
+// }" 0
  E E E
 0
 LAYER, 1 

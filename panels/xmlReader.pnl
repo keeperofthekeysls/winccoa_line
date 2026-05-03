@@ -73,50 +73,20 @@ while(nodeName != \"SCL\")
   rootNode = xmlNextSibling(id, rootNode);
   Debug(nodeName);
 }
-objName = walk(rootNode, currentPath);
+walk(rootNode);
 
 xmlCloseDocument(id);
 
 DebugN(\"File Closed\");
 }
 
-string walk (unsigned node, string path)
+void walk (int node)
 {
-  string nodeName;
-  nodeName=xmlNodeName(id, node);
-  switch (nodeName)
-  {
-      case \"SCL\":
-    {
-      node = xmlFirstChild(id, node);
-      DebugN(\"switch node scl\");
-      return nodeName;
-    }
-      case \"Substation\":
-      case \"VoltageLevel\":
-      case \"Voltage\":
-      case \"Bay\":
-    default:{
-        return \"\";
-        break;
-      }
-      }
-  Debug(nodeName);
-  if (nodeName == \"SCL\" || node != -1)
-  {
-    walk(xmlFirstChild(id, node),nodeName);
-    walk(xmlNextSibling(id, node),nodeName);
-  }
   if ( node != -1 )
   {
-    walk(xmlFirstChild(id, node),nodeName);
-    walk(xmlNextSibling(id, node),nodeName);
+    walk(xmlFirstChild(id, node));
+    walk(xmlNextSibling(id, node));
   }
-  else
-  {
-    DebugN(xmlNodeName(id, node),\"Узел последний или нет дочерних узлов\");
-  }
-
 }
 
 int fact (int f)

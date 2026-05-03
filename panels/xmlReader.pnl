@@ -34,7 +34,8 @@ LANG:10027 43 Noto Sans,-1,16,5,400,0,0,0,0,0,0,0,0,0,0,1
 T 
 1
 LANG:10027 12 PUSH_BUTTON1
-"global int id;//Идентификатор документа
+"#uses \"CtrlXml\"
+global int id;//Идентификатор документа
 
 main(mapping event)
 {
@@ -46,15 +47,15 @@ main(mapping event)
 
 
   //Переменная для хранения имени узла
-  string nodeName;
+  string nodeName = \"\";
 
   //переменная для хранения узлов.
   unsigned rootNode, parentNode;
-  unsigned node;
+  unsigned nodeXw;
   dyn_uint childNodes,searchNode;
   uint cN;
 
-uint node;
+uint nodeX;
 
 string objName;
 string currentPath;
@@ -64,15 +65,93 @@ dyn_string graphNodes;
   //Открытие документа
 id = xmlDocumentFromFile(fileName, errMsg, errLine, errColumn);
 DebugN(\"File opened\");
-
-  //Читаем первый элемент файла
 rootNode = xmlFirstChild(id);
-if (isChild(id, rootNode)== false) rootNode = xmlNextSibling(id,rootNode);
-nodeName = xmlNodeName(id, rootNode);
-if (xmlNodeName(id,rootNode) == \"SCL\")walk(rootNode);
+//Читаем первый элемент файла
+while(nodeName != \"SCL\")
+{
+  nodeName = xmlNodeName(id, rootNode);
+  rootNode = xmlNextSibling(id, rootNode);
+  Debug(nodeName);
+}
+objName = walk(rootNode, currentPath);
+
 xmlCloseDocument(id);
+
 DebugN(\"File Closed\");
 }
+
+string walk (unsigned node, string path)
+{
+  string nodeName;
+  nodeName=xmlNodeName(id, node);
+  switch (nodeName)
+  {
+      case \"SCL\":
+    {
+      node = xmlFirstChild(id, node);
+      DebugN(\"switch node scl\");
+      return nodeName;
+    }
+      case \"Substation\":
+      case \"VoltageLevel\":
+      case \"Voltage\":
+      case \"Bay\":
+    default:{
+        return \"\";
+        break;
+      }
+      }
+  Debug(nodeName);
+  if (nodeName == \"SCL\" || node != -1)
+  {
+    walk(xmlFirstChild(id, node),nodeName);
+    walk(xmlNextSibling(id, node),nodeName);
+  }
+  if ( node != -1 )
+  {
+    walk(xmlFirstChild(id, node),nodeName);
+    walk(xmlNextSibling(id, node),nodeName);
+  }
+  else
+  {
+    DebugN(xmlNodeName(id, node),\"Узел последний или нет дочерних узлов\");
+  }
+
+}
+
+int fact (int f)
+{
+  int s = 1;
+  for (int i = 1; i < f; i++)
+  {
+    s = s * fact (i);
+    DebugN(s);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Проверка узлов на наличие дочерних узлов
 bool isChild(int idDoc, unsigned rootNode)
 {
@@ -86,16 +165,7 @@ bool isChild(int idDoc, unsigned rootNode)
     DebugN(xmlNodeName(idDoc,rootNode),\"isCHild = true\");
     return true;
   }
-}
-void walk (uint node)
-{
-  if ( node != -1 )
-  {
-    walk(xmlFirstChild(id, node));
-    walk(xmlNextSibling(id, node));
-  }
-}
-" 0
+}" 0
  E E E
 0
 LAYER, 1 

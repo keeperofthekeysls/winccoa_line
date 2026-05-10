@@ -35,67 +35,57 @@ T
 1
 LANG:10027 12 PUSH_BUTTON1
 "#uses \"CtrlXml\"
-global int id;//Идентификатор документа
+global int gDoc;//Идентификатор документа
 
 main(mapping event)
 {
-  //Переменные для функции открытия документа
-
-  string fileName = \"c:/d/project.scl\";//Путь документа
+  string fileName = \"C:/D/winccoa_project/wincc_line/data/IEC61850/SCL/project.scl\";
   string errMsg;
   int errLine, errColumn;
 
+  gDoc = xmlDocumentFromFile(fileName, errMsg,errLine, errColumn);
+  DebugN(\"Document opened\",gDoc);
 
-  //Переменная для хранения имени узла
-  string nodeName = \"\";
-
-  //переменная для хранения узлов.
-  unsigned rootNode, parentNode;
-  unsigned nodeXw;
-  dyn_uint childNodes,searchNode;
-  uint cN;
-
-uint nodeX;
-
-string objName;
-string currentPath;
-dyn_string graphNodes;
-
-  bool b = true;
-  //Открытие документа
-id = xmlDocumentFromFile(fileName, errMsg, errLine, errColumn);
-DebugN(\"File opened\");
-rootNode = xmlFirstChild(id);
-//Читаем первый элемент файла
-while(nodeName != \"SCL\")
-{
-  nodeName = xmlNodeName(id, rootNode);
-  rootNode = xmlNextSibling(id, rootNode);
-  Debug(nodeName);
-}
-walk(rootNode);
-
-xmlCloseDocument(id);
-
-DebugN(\"File Closed\");
-}
-
-void walk (int node)
-{
-  if ( node != -1 )
+  if (gDoc == 0)
   {
-    walk(xmlFirstChild(id, node));
-    walk(xmlNextSibling(id, node));
+    DebugN(\"XmlOpenError\");
+    return;
   }
+
+  unsigned root;
+  root = xmlFirstChild(gDoc,root);
+  DebugN(\"Start walk\");
+  walkSclNode(root,0);
+  DebugN(\"Stop Walk\");
+  xmlCloseDocument(gDoc);
+   DebugN(\"Document closed\",gDoc);
 }
 
-int fact (int f)
+
+void walkSclNode(unsigned node, int level)
 {
-  int s = 1;
-  for (int i = 1; i < f; i++)
+  if (node != -1)
   {
-    s = s * fact (i);
-    DebugN(s);
+    DebugN(\"node = -1\");
+    return;
+  }
+  string indent  = \"\";
+  for (int i = 0; i < level; i++)
+    indent += \"  \";
+
+  string nodeName;
+  nodeName = xmlNodeName(gDoc, node);
+  DebugN(\"NodeName = \" , nodeName);
+  int nodeType = xmlNodeType(gDoc, node);
+
+  DebugN(indent + \"Node\", nodeName,\"TYPE\",nodeType);
+  unsigned child;
+  child = xmlFirstChild(gDoc, node);
+  while (child != -1)
+  {
+    walkSclNode(child,level + 1);
+    child = xmlNextSibling(gDoc, child);
+    DebugN(indent + \"Return From:\", nodeName);
   }
 }
 
@@ -116,26 +106,7 @@ int fact (int f)
 
 
 
-
-
-
-
-
-
-//Проверка узлов на наличие дочерних узлов
-bool isChild(int idDoc, unsigned rootNode)
-{
-  if (xmlFirstChild(idDoc, rootNode) < 0)
-  {
-    DebugN(xmlNodeName(idDoc,rootNode),\"isCHild = false\");
-    return false;
-  }
-  else
-  {
-    DebugN(xmlNodeName(idDoc,rootNode),\"isCHild = true\");
-    return true;
-  }
-}" 0
+" 0
  E E E
 0
 LAYER, 1 

@@ -53,18 +53,22 @@ main(mapping event)
   }
 
   unsigned root;
-  root = xmlFirstChild(gDoc,root);
+  root = xmlFirstChild(gDoc);
+  if (xmlFirstChild(gDoc,root) == -1)
+   root = xmlNextSibling(gDoc, root);
+  DebugN(xmlNodeName(gDoc, root));
   DebugN(\"Start walk\");
+  DebugN(xmlNodeName(gDoc,root));
   walkSclNode(root,0);
   DebugN(\"Stop Walk\");
   xmlCloseDocument(gDoc);
-   DebugN(\"Document closed\",gDoc);
+  DebugN(\"Document closed\",gDoc);
 }
 
 
 void walkSclNode(unsigned node, int level)
 {
-  if (node != -1)
+  if (node == -1)
   {
     DebugN(\"node = -1\");
     return;
@@ -72,25 +76,45 @@ void walkSclNode(unsigned node, int level)
   string indent  = \"\";
   for (int i = 0; i < level; i++)
     indent += \"  \";
-
   string nodeName;
   nodeName = xmlNodeName(gDoc, node);
-  DebugN(\"NodeName = \" , nodeName);
-  int nodeType = xmlNodeType(gDoc, node);
-
-  DebugN(indent + \"Node\", nodeName,\"TYPE\",nodeType);
-  unsigned child;
-  child = xmlFirstChild(gDoc, node);
-  while (child != -1)
+  if (isSclTopologyNode(nodeName))
   {
-    walkSclNode(child,level + 1);
-    child = xmlNextSibling(gDoc, child);
-    DebugN(indent + \"Return From:\", nodeName);
+    DebugN(\"Обрабатываем\", nodeName);
+    int nodeType = xmlNodeType(gDoc, node);
+
+    DebugN(indent + \"Node\", nodeName,\"TYPE\",nodeType);
+    unsigned child;
+    child = xmlFirstChild(gDoc, node);
+    while (child != -1)
+    {
+      walkSclNode(child,level + 1);
+      child = xmlNextSibling(gDoc, child);
+      DebugN(indent + \"Return From:\", nodeName);
+    }
   }
+
 }
 
 
-
+bool isSclTopologyNode (string nodeName)
+{
+  switch(nodeName)
+  {
+    case \"SCL\":
+    case \"Substation\" :
+    case \"VoltageLevel\":
+    case \"Bay\" :
+    case \"ConductingEquipment\":
+    case \"Terminal\":
+    case \"ConnectivityNode\":
+      return true;
+      break;
+    default:
+      return false;
+      break;
+  }
+}
 
 
 

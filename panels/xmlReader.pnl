@@ -77,17 +77,19 @@ void walkSclNode(unsigned node, int level)
   for (int i = 0; i < level; i++)
     indent += \"  \";
   string nodeName;
+  string attrValue;
   nodeName = xmlNodeName(gDoc, node);
   if (isSclTopologyNode(nodeName))
   {
     DebugN(\"Обрабатываем\", nodeName);
     int nodeType = xmlNodeType(gDoc, node);
-
+    int attr;
     DebugN(indent + \"Node\", nodeName,\"TYPE\",nodeType);
     unsigned child;
     child = xmlFirstChild(gDoc, node);
     while (child != -1)
     {
+      processSclNode(node);
       walkSclNode(child,level + 1);
       child = xmlNextSibling(gDoc, child);
       DebugN(indent + \"Return From:\", nodeName);
@@ -115,7 +117,44 @@ bool isSclTopologyNode (string nodeName)
       break;
   }
 }
+//Функция считывает атрибуты узлов. Необходимо до
+void processSclNode(unsigned node)
+{
+  string nodeName = xmlNodeName(gDoc, node);
+  DebugN(\"processSclNode\" , nodeName);
+  string attrValue;
+  if (isSclTopologyNode(nodeName))
+  {
+    switch(nodeName)
+    {
+      case \"SCL\": return;
+      case \"Substation\" :
+      case \"VoltageLevel\":
+      case \"Bay\" :
+        xmlGetElementAttribute(gDoc, node, \"name\", attrValue);
+        return;
+      case \"ConductingEquipment\":
+        xmlGetElementAttribute(gDoc, node, \"name\", attrValue);
+        xmlGetElementAttribute(gDoc, node, \"type\", attrValue);
+        DebugN(nodeName,\"___TYPE\",attrValue);
+      return;
+      case \"Terminal\":
+        xmlGetElementAttribute(gDoc, node, \"name\", attrValue);
+        xmlGetElementAttribute(gDoc, node, \"connectivityNode\", attrValue);
+        DebugN(nodeName,\"____NODE\",attrValue);
+      return;
+      case \"ConnectivityNode\":
+        xmlGetElementAttribute(gDoc, node, \"name\", attrValue);
+        xmlGetElementAttribute(gDoc, node, \"pathName\", attrValue);
+        DebugN(nodeName,\"_____PATHNAME\",attrValue);
+        return;
+      default:
 
+        DebugN(nodeName,\"processNodeName_EXIT\",attrValue);
+        break;
+    }
+  }
+}
 
 
 

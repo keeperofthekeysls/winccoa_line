@@ -120,6 +120,7 @@ bool isSclTopologyNode (string nodeName)
 //Функция считывает атрибуты узлов. Необходимо до
 void processSclNode(unsigned node)
 {
+
   string nodeName = xmlNodeName(gDoc, node);
   DebugN(\"processSclNode\" , nodeName);
   string attrValue;
@@ -132,6 +133,7 @@ void processSclNode(unsigned node)
       case \"VoltageLevel\":
       case \"Bay\" :
         xmlGetElementAttribute(gDoc, node, \"name\", attrValue);
+        DebugN(\"__________________________TYYYYPPPPPPPEEE_________________________________________\",attrValue);
         return;
       case \"ConductingEquipment\":
         xmlGetElementAttribute(gDoc, node, \"name\", attrValue);
@@ -149,7 +151,6 @@ void processSclNode(unsigned node)
         DebugN(nodeName,\"_____PATHNAME\",attrValue);
         return;
       default:
-
         DebugN(nodeName,\"processNodeName_EXIT\",attrValue);
         break;
     }
